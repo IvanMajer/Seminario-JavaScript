@@ -7,12 +7,12 @@
             margin: 0;
             min-height: 100vh;
             font-family: Arial, sans-serif;
-            position: relative; /* Necesario para posicionar el logo */
+            position: relative; 
             background-color: #6d6c6c;
         }
 
         /* Barra lateral */
-        .sidebar {
+        .izquierda {
             width: 300px;
             position: fixed;
             left: 0;
@@ -23,8 +23,8 @@
             border-right: 10px solid #921d1d;
         }
 
-        .main-content {
-            margin-left: 400px; /* Deja espacio para la barra lateral */
+        .main {
+            margin-left: 400px; 
             padding: 30px;
         }
         .foto-universidad{
@@ -39,10 +39,9 @@
             transition: transform 0.3s;
         }
 
-         /* Estilo para el logo */
         .logo-unlp {
             position: fixed;
-            bottom: 20px;
+            top: 20px;
             right: 20px;
             width: 100px;
             z-index: 1000;
@@ -55,8 +54,8 @@
             opacity: 1;
         }
 
-        /* Estilos títulos */
-        .titulo-principal {
+
+        .titulo {
             color: #000000;
             font-size: 2.5em;
             border-left: 5px solid #921d1d;
@@ -71,8 +70,8 @@
             margin-left: 50px;
         }
 
-        /* Enlaces */
-        .sidebar a {
+
+        .izquierda a {
             text-decoration: none;
             color: #000000;
             display: block;
@@ -82,20 +81,19 @@
             transition: all 0.3s;
         }
 
-        .sidebar a:hover {
+        .izquierda a:hover {
             background-color: #6d6c6c;
             color: white;
         }
 
-        .sidebar h3 {
+        .izquierda h3 {
             font-size: 1.8em;
             margin-bottom: 30px;
             padding-bottom: 10px;
-            border-bottom: 4px solid #a11b1b; /* barra */
+            border-bottom: 4px solid #a11b1b; 
         }
 
-        /* Detalle azul en párrafo */
-        .destacado {
+        .siu {
             font-weight: bold;
             padding: 10px;
             border-left: 6px solid #a11b1b;
@@ -103,7 +101,7 @@
             left: 0px;
             top: 800px;
         }
-        .destacado a{
+        .siu a{
             text-decoration: none;
             color: #000000;
             padding: 8px 3px;
@@ -112,7 +110,7 @@
             transition: all 0.3s;
 
         }
-        .destacado a:hover{
+        .siu a:hover{
             background-color: #6d6c6c;
             color: white; 
         }
@@ -120,20 +118,17 @@
 <head>
 <body>
 
-<div class="sidebar">
+<div class="izquierda">
         <h3>Nuestras carreras: </h3>
         <a href="https://www.info.unlp.edu.ar/carreras-de-grado-lic-en-informatica/">> Licenciatura en Informatica. </a></a>
         <a href ="https://www.info.unlp.edu.ar/licenciatura-en-sistemas/">> Licenciatura en Sistemas.</a></a>
         <a href = "https://cdo.info.unlp.edu.ar/" >> Ciencia de Datos en Organizaciones.</a> </a>
-        <p class="destacado"><a href = "https://autogestion.guarani.unlp.edu.ar/" > > Siu Guarani.</a></p>
+        <p class="siu"><a href = "https://autogestion.guarani.unlp.edu.ar/" > > Siu Guarani.</a></p>
     </div>
     
-<div class="main-content">
-    <h1 class="titulo-principal">Facultad de Informatica.</h1>
+<div class="main">
+    <h1 class="titulo">Facultad de Informatica.</h1>
     <h2 class="subtitulo">Universidad Nacional de La Plata.</h2>
-
-    
-<!-- Logo de la Facultad -->
 <a href="https://www.info.unlp.edu.ar/" target="_blank">
     <img src="https://i.imgur.com/21t7jrJ.png" alt="Logo UNLP" class="logo-unlp">
 <img src="https://www.info.unlp.edu.ar/wp-content/uploads/2020/01/DSC0802.jpg" alt="Foto UNLP" class="foto-universidad">
