@@ -1,0 +1,23 @@
+.spinner {
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #f1c40f 0deg 90deg,
+    #e74c3c 90deg 180deg,
+    #27ae60 180deg 270deg,
+    #3498db 270deg 360deg
+  );
+}
+.spinner.spinning { /* opcional: cursor, sombra */ }
+
+.modal {
+  position: fixed; top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.6);
+  display: flex; align-items:center; justify-content:center;
+}
+.modal-content {
+  background: #fff; padding:1.5rem; border-radius:8px;
+  text-align:center;
+}
+.end-screen { text-align:center; padding:2rem; }
+.avatar-large { width:100px; height:100px; }
