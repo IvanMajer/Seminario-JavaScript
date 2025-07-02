@@ -1,10 +1,10 @@
-Agregar preguntas para cada uno de los topicos. El formato de pregunta es el siguiente:
+1) Agregar preguntas para cada uno de los topicos. El formato de pregunta es el siguiente: --> sin completar. 
 
-{
-  "id": 1,
-  "topic": "Historia",
-  "text": "¿Cuál fue la capital del Imperio Inca?",
-  "opciones": ["Machu Picchu", "Cuzco", "Lima", "Quito"],
-  "respuesta": 1,
-  "dificultad": 1
-}
+          {
+            "id": 1,
+            "topic": "Historia",
+            "text": "¿Cuál fue la capital del Imperio Inca?",
+            "opciones": ["Machu Picchu", "Cuzco", "Lima", "Quito"],
+            "respuesta": 1,
+            "dificultad": 1
+          }
