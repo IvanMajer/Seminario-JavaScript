@@ -13,6 +13,8 @@ export function init() {
 }
 
 async function startGame(rawPlayers) {
+  console.log('startGame arranca con rawPlayers:', rawPlayers);
+
   // 1) Creamos los Jugador
   const players = rawPlayers.map(p => 
     new Jugador(p.nombre, p.avatar, p.topics)
@@ -54,10 +56,11 @@ export function nextTurn() {
   partida.currentQuestion = preguntaObj;
 
   // Disparamos la animación
-  ui.renderSpinner(topic, idx, topics.length);
+ ui.renderSpinner(topic, idx, partida.topicsEnJuego);
 }
 
 export function handleSpinEnd() {
+  console.log('🔔 handleSpinEnd se ha disparado');
   ui.renderQuestion(partida.currentQuestion);
   startTimer();
 }

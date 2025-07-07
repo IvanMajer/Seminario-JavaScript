@@ -1,12 +1,13 @@
 // js/ui.js
 import * as control from './control.js';
 
+
 export function renderSetup(onStart) {
   const root = document.getElementById('root');
-  root.innerHTML = `
-    <h1>Versus Preguntas</h1>
-    <div class="setup">
-      ${[0,1].map(i => `
+
+  // 1) HTML previo de jugadores
+  const playersHtml = [0,1].map(i => {
+    return `
       <div class="jugador-setup" data-jugador="${i}">
         <h2>Jugador ${i+1}</h2>
         <input type="text" placeholder="Nombre" class="js-nombre"/>
@@ -19,12 +20,22 @@ export function renderSetup(onStart) {
             .map(t => `<label><input type="checkbox" value="${t}"/> ${t}</label>`)
             .join('')}
         </div>
-      </div>`).join('')}
+      </div>
+    `;
+  }).join('');
+
+  // 2) Inyección en el root
+  root.innerHTML = `
+    <h1>Versus Preguntas</h1>
+    <div class="setup">
+      ${playersHtml}
     </div>
     <button id="start-btn" disabled>Iniciar Partida</button>
   `;
 
   const startBtn = document.getElementById('start-btn');
+  console.log('renderSetup: listeners attached');
+
   root.addEventListener('input', () => {
     const ok = [0,1].every(i => {
       const p      = root.querySelector(`.jugador-setup[data-jugador="${i}"]`);
@@ -36,6 +47,7 @@ export function renderSetup(onStart) {
   });
 
   startBtn.addEventListener('click', () => {
+    console.log('start-btn clicked');
     const players = [0,1].map(i => {
       const p = root.querySelector(`.jugador-setup[data-jugador="${i}"]`);
       return {
@@ -44,6 +56,7 @@ export function renderSetup(onStart) {
         topics: Array.from(p.querySelectorAll('input:checked')).map(ch => ch.value)
       };
     });
+    console.log('Jugadores seleccionados:', players);
     onStart(players);
   });
 }
@@ -65,35 +78,54 @@ export function renderGame(partida) {
 }
 
 export function updateLifeBars(jugadores) {
-  jugadores.forEach((p,i) => {
+  jugadores.forEach((p, i) => {
     const el  = document.getElementById(`p${i+1}-info`);
     const pct = Math.round(p.vida / p.maxVida * 100);
     el.innerHTML = `
-      <img src="${p.avatar}" class="avatar"/>
+      <div class="avatar-text">${p.avatar}</div>
       <span class="name">${p.nombre}</span>
       <div class="life-bar">
         <div class="life-fill" style="width:${pct}%"></div>
       </div>
     `;
-  });
-}
+  });  // cierra el forEach
+} 
 
-export function renderSpinner(topic, topicIndex, totalTopics) {
+export function renderSpinner(topic, topicIndex, topics) {
   const spinEl = document.getElementById('spinner');
   spinEl.innerHTML = '';
   spinEl.classList.add('spinning');
 
+  const totalTopics = topics.length;
   const segmentAngle = 360 / totalTopics;
-  const degs = 360*3 + (topicIndex*segmentAngle) + segmentAngle/2;
 
-  // CORRECCIÓN: transform (no tranform)
-  spinEl.style.transition = 'transform 2s ease-out';
-  spinEl.style.transform  = `rotate(${degs}deg)`;
+  // Generar segmentos a partir del array que te pasan
+  const segmentsHtml = topics.map((t, i) => `
+    <div class="segment"
+         style="
+           transform: rotate(${i * segmentAngle}deg)
+                      skewY(${90 - segmentAngle}deg);
+         ">
+      <span class="segment-label">${t}</span>
+    </div>
+  `).join('');
+  spinEl.innerHTML = segmentsHtml;
 
+  // Listener antes de animar
   spinEl.addEventListener('transitionend', () => {
     spinEl.classList.remove('spinning');
     control.handleSpinEnd();
   }, { once: true });
+
+  // Forzar reflow
+  spinEl.style.transition = 'none';
+  spinEl.style.transform = 'rotate(0deg)';
+  spinEl.getBoundingClientRect();
+
+  // Iniciar animación
+  const degs = 360 * 3 + (topicIndex * segmentAngle) + segmentAngle / 2;
+  spinEl.style.transition = 'transform 2s ease-out';
+  spinEl.style.transform  = `rotate(${degs}deg)`;
 }
 
 export function renderQuestion(pregunta) {
