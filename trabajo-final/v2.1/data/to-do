@@ -1,5 +1,15 @@
-1) Agregar preguntas para cada uno de los topicos. El formato de pregunta es el siguiente: --> sin completar. 
+/* 1) Agregar preguntas para cada uno de los topicos. --> sin completar. 
 
+    formato topic:
+            {
+                "nombre": "Historia",
+                "icono": "🏛️",
+                "color": "#8B4513"
+            },
+
+
+
+    formato pregunta:   
           {
             "id": 1,
             "topic": "Historia",
@@ -7,4 +17,6 @@
             "opciones": ["Machu Picchu", "Cuzco", "Lima", "Quito"],
             "respuesta": 1,
             "dificultad": 1
-          }
+          }   
+      
+          */

@@ -4,8 +4,7 @@
 import { jugador as Jugador, pregunta as Pregunta, juego as JuegoModel } from "./models.js"
 import * as ui from "./ui.js"
 
-// Variables globales del juego
-let partida // Aquí guardamos la instancia del juego actual
+let partida // guardamos la instancia del juego.
 let timerInterval // Controla el temporizador de las preguntas
 let gameData // Datos del juego cargados desde JSON
 

@@ -1,2 +1,3 @@
-1) mejorar el html y css. Mejorar interfaces, encontrar errores. 
-2) agregar las reglas del juego en la primera interface. 
+/* 
+    * Ajustar la pagina para que pueda usarse correctamente en cualquier resolucion de pantalla. 
+    * Que no se pueda girar la ruleta en el turno, que se pueda clickear una sola vez por ronda, para evitar que el jugador pueda clickear constantemente.  
