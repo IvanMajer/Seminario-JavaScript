@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "topic": "Historia",
+    "text": "¿Quién fue el primer emperador del Imperio Romano?",
+    "opciones": ["Augusto", "Julio César", "Nerón", "Trajano"],
+    "respuesta": 0,
+    "dificultad": 2
+  },
+  {
+    "id": 2,
+    "topic": "Historia",
+    "text": "¿En qué año comenzó la Segunda Guerra Mundial?",
+    "opciones": ["1914", "1939", "1945", "1929"],
+    "respuesta": 1,
+    "dificultad": 2
+  },
+  {
+    "id": 3,
+    "topic": "Historia",
+    "text": "¿Qué civilización construyó las pirámides de Giza?",
+    "opciones": ["Mayas", "Aztecas", "Egipcios", "Incas"],
+    "respuesta": 2,
+    "dificultad": 1
+  },
+  {
+    "id": 4,
+    "topic": "Historia",
+    "text": "¿Quién escribió 'La Ilíada'?",
+    "opciones": ["Homero", "Sófocles", "Platón", "Aristóteles"],
+    "respuesta": 0,
+    "dificultad": 3
+  },
+  {
+    "id": 5,
+    "topic": "Historia",
+    "text": "¿Cuál fue la causa inmediata de la Primera Guerra Mundial?",
+    "opciones": ["Invasión a Polonia", "Asesinato de Francisco Fernando", "Tratado de Versalles", "Crisis de los misiles"],
+    "respuesta": 1,
+    "dificultad": 3
+  },
+  {
+    "id": 6,
+    "topic": "Ciencia",
+    "text": "¿Cuál es la unidad básica de la vida?",
+    "opciones": ["Átomo", "Molécula", "Célula", "Tejido"],
+    "respuesta": 2,
+    "dificultad": 1
+  },
+  {
+    "id": 7,
+    "topic": "Ciencia",
+    "text": "¿Qué científico propuso la teoría de la relatividad?",
+    "opciones": ["Isaac Newton", "Albert Einstein", "Galileo Galilei", "Niels Bohr"],
+    "respuesta": 1,
+    "dificultad": 1
+  },
+  {
+    "id": 8,
+    "topic": "Ciencia",
+    "text": "¿Cómo se llama el proceso por el cual las plantas convierten la luz en energía?",
+    "opciones": ["Fermentación", "Fotosíntesis", "Respiración", "Transpiración"],
+    "respuesta": 1,
+    "dificultad": 1
+  },
+  {
+    "id": 9,
+    "topic": "Ciencia",
+    "text": "¿Qué partícula subatómica tiene carga negativa?",
+    "opciones": ["Protón", "Neutrón", "Electrón", "Positrón"],
+    "respuesta": 2,
+    "dificultad": 2
+  },
+  {
+    "id": 10,
+    "topic": "Ciencia",
+    "text": "¿Cuál es la fórmula química del agua?",
+    "opciones": ["CO2", "H2O", "O2", "NaCl"],
+    "respuesta": 1,
+    "dificultad": 1
+  },
+  {
+    "id": 11,
+    "topic": "Arte",
+    "text": "¿Quién pintó la Mona Lisa?",
+    "opciones": ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Miguel Ángel"],
+    "respuesta": 1,
+    "dificultad": 1
+  },
+  {
+    "id": 12,
+    "topic": "Arte",
+    "text": "¿A qué movimiento artístico pertenece Salvador Dalí?",
+    "opciones": ["Impresionismo", "Cubismo", "Surrealismo", "Romanticismo"],
+    "respuesta": 2,
+    "dificultad": 1
+  },
+  {
+    "id": 13,
+    "topic": "Arte",
+    "text": "¿En qué ciudad se encuentra el Museo del Prado?",
+    "opciones": ["Londres", "París", "Madrid", "Roma"],
+    "respuesta": 2,
+    "dificultad": 1
+  },
+  {
+    "id": 14,
+    "topic": "Arte",
+    "text": "¿Cuál es la técnica que utiliza pigmentos en polvo mezclados con agua y fijados en la pared?",
+    "opciones": ["Óleo", "Acuarela", "Fresco", "Temple"],
+    "respuesta": 2,
+    "dificultad": 2
+  },
+  {
+    "id": 15,
+    "topic": "Arte",
+    "text": "¿Qué arquitecto diseñó la Sagrada Familia de Barcelona?",
+    "opciones": ["Antoni Gaudí", "Frank Lloyd Wright", "Le Corbusier", "Zaha Hadid"],
+    "respuesta": 0,
+    "dificultad": 2
+  },
+  {
+    "id": 16,
+    "topic": "Deportes",
+    "text": "¿En qué deporte se utiliza una raqueta y una pelota amarilla pequeña?",
+    "opciones": ["Fútbol", "Tenis", "Baloncesto", "Natación"],
+    "respuesta": 1,
+    "dificultad": 1
+  },
+  {
+    "id": 17,
+    "topic": "Deportes",
+    "text": "¿Cuántos jugadores forman un equipo de baloncesto en la cancha?",
+    "opciones": ["5", "6", "7", "11"],
+    "respuesta": 0,
+    "dificultad": 1
+  },
+  {
+    "id": 18,
+    "topic": "Deportes",
+    "text": "¿En qué país se originó el fútbol?",
+    "opciones": ["Brasil", "Inglaterra", "Argentina", "Italia"],
+    "respuesta": 1,
+    "dificultad": 1
+  },
+  {
+    "id": 19,
+    "topic": "Deportes",
+    "text": "¿Cómo se llama el evento deportivo de atletismo que consta de 10 pruebas?",
+    "opciones": ["Heptatlón", "Pentatlón", "Decatlón", "Triatlón"],
+    "respuesta": 2,
+    "dificultad": 2
+  },
+  {
+    "id": 20,
+    "topic": "Deportes",
+    "text": "¿En qué deporte se usa un bate y una pelota blanca y roja?",
+    "opciones": ["Béisbol", "Cricket", "Hockey sobre césped", "Rugby"],
+    "respuesta": 1,
+    "dificultad": 2
+  }
+]
