@@ -1,9 +1,0 @@
-  //  1) chequear cada uno de los modulos del programa, escribir detalladamente que hace cada uno. 
-
-
-
-  
-// La carpeta contiene lo siguiente: 
-// models.js --> contiene las clases del juego (jugador-pregunta-juego).
-// control.js --> es el control del juego, maneja el comienzo del juego, el proximo turno, permite la conexion entre models.js y ui.js
-// ui.js --> es todo lo que se ve en pantalla, escucha a los eventos (como clicks) y llama al controlador cuando los jugadores interactuan.
