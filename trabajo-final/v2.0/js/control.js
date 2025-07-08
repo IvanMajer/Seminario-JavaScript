@@ -12,6 +12,8 @@ export function init() {
   // cargamos los datos del juego y renderizamos la pantalla de setup.
   loadGameData().then(() => {
     ui.renderSetup(startGame, gameData.metadata.temas)
+    // Precargar sonidos
+    ui.preloadSounds && ui.preloadSounds()
   })
 }
 
@@ -60,6 +62,9 @@ async function startGame(rawPlayers) {
     // creamos la instancia del juego.
     partida = new JuegoModel(players, questions)
 
+    // Hacer la partida accesible globalmente para la UI
+    window.currentGame = partida
+
     // combinamos todos los temas elegidos por ambos jugadores (sin repetir).
     const allTopics = [...partida.jugadores[0].topics, ...partida.jugadores[1].topics]
     partida.topicsEnJuego = [...new Set(allTopics)] // Set elimina duplicados.
@@ -86,6 +91,12 @@ async function startGame(rawPlayers) {
 // función que inicia un nuevo turno.
 export function nextTurn() {
   console.log(`Turno ${partida.round} - Jugador: ${partida.jugadorActual.nombre}`)
+
+  // Actualizamos el número de ronda en pantalla
+  ui.updateRoundNumber(partida.round)
+
+  // Actualizar la referencia global del juego
+  window.currentGame = partida
 
   // elegimos un tema al azar de los disponibles.
   const topics = partida.topicsEnJuego
@@ -121,7 +132,7 @@ export function nextTurn() {
   console.log("Pregunta seleccionada:", partida.currentQuestion.text)
 
   // iniciamos la animación de la ruleta.
-  ui.renderSpinner(selectedTopic, randomTopicIndex, partida.topicsEnJuego, gameData.metadata.temas)
+  ui.renderSpinner(selectedTopic, randomIndex, partida.topicsEnJuego, gameData.metadata.temas)
 }
 
 // funcion que se ejecuta cuando la ruleta termina de girar.
@@ -157,7 +168,7 @@ function startTimer() {
     // si el tiempo llego a 0, se acabo el tiempo.
     if (partida.timer <= 0) {
       clearInterval(timerInterval) // detenemos el temporizador.
-      handleTimeout() // ejecutamos el manejador de Timeout. 
+      handleTimeout() // ejecutamos el manejador de Timeout.
     }
   }, 1000)
 }
@@ -171,6 +182,12 @@ export function handleAnswer(choiceIdx) {
 
   const q = partida.currentQuestion
   const correct = choiceIdx === q.respuesta // verificamos si es correcta.
+  const correctAnswerInfo = {
+    correctIndex: q.respuesta,
+    correctText: q.opciones[q.respuesta],
+    selectedIndex: choiceIdx,
+    selectedText: q.opciones[choiceIdx],
+  }
   let damage = 0
   const maxTime = partida.getMaxTime()
 
@@ -196,7 +213,7 @@ export function handleAnswer(choiceIdx) {
   const gameOver = partida.jugadores.some((p) => p.vida <= 0)
 
   // mostramos el resultado de la ronda.
-  ui.showRoundResult(correct, damage, false, () => {
+  ui.showRoundResult(correct, damage, false, correctAnswerInfo, () => {
     // actualizamos las barras de vida.
     ui.updateLifeBars(partida.jugadores)
 
@@ -208,9 +225,15 @@ export function handleAnswer(choiceIdx) {
     } else {
       // si el juego continua, esperamos un poco y pasamos al siguiente turno.
       setTimeout(() => {
-        partida.siguienteJugador() // cambiamos de jugador.
-        partida.round++ // aumentamos el numero de ronda.
-        nextTurn() // iniciamos el siguiente turno.
+        partida.siguienteJugador() // Cambiamos de jugador
+
+        // ARREGLADO: Solo aumentar ronda cuando ambos jugadores hayan jugado (cuando volvemos al jugador 0)
+        if (partida.jugadorActualID === 0) {
+          partida.round++
+          console.log("Nueva ronda:", partida.round)
+        }
+
+        nextTurn() // Iniciamos el siguiente turno
       }, 500)
     }
   })
@@ -225,34 +248,45 @@ function handleTimeout() {
 
   if (!partida.isSecondChance) {
     // primera vez que se acaba el tiempo -> damos segunda oportunidad.
-    console.log(`Oportunidad bonus al jugador ${partida.rival.nombre} `)
+    console.log(`Oportunidad bonus al jugador ${partida.rival.nombre}`)
     partida.isSecondChance = true
     partida.jugadorActual.vida = Math.max(0, partida.jugadorActual.vida - damage)
     partida.siguienteJugador()
 
-    ui.showRoundResult(false, damage, true, () => {
+    ui.showRoundResult(false, damage, true, null, () => {
       ui.updateLifeBars(partida.jugadores)
       ui.renderQuestion(partida.currentQuestion) // misma pregunta.
       startTimer() // nuevo temporizador.
     })
   } else {
     // segunda vez que se acaba el tiempo -> continuamos el juego.
-    console.log(`Oportunidad bonus al jugador ${partida.jugadorActual.nombre} perdida`)
+    console.log(`Oportunidad bonus perdida`)
     partida.isSecondChance = false
     partida.jugadorActual.vida = Math.max(0, partida.jugadorActual.vida - damage)
 
     const gameOver = partida.jugadores.some((p) => p.vida <= 0)
 
-    ui.showRoundResult(false, damage, true, () => {
+    ui.showRoundResult(false, damage, true, null, () => {
       ui.updateLifeBars(partida.jugadores)
 
       if (gameOver) {
         const winner = partida.jugadores.find((p) => p.vida > 0)
         ui.renderEnd({ winner, rounds: partida.round })
       } else {
-        partida.round++
-        nextTurn()
+        setTimeout(() => {
+          partida.siguienteJugador()
+
+          // ARREGLADO: Solo aumentar ronda cuando ambos jugadores hayan jugado (cuando volvemos al jugador 0)
+          if (partida.jugadorActualID === 0) {
+            partida.round++
+            console.log("Nueva ronda:", partida.round)
+          }
+
+          nextTurn()
+        }, 500)
       }
     })
   }
 }
+
+

@@ -1,36 +1,36 @@
-// clase jugador -> representa a cada jugador. 
+// clase jugador -> representa a cada jugador.
 export class jugador {
   constructor(nombre, avatar, topics = []) {
-    this.nombre = nombre 
-    this.avatar = avatar 
-    this.topics = topics 
-    this.maxVida = 100 
-    this.vida = this.maxVida 
+    this.nombre = nombre
+    this.avatar = avatar
+    this.topics = topics
+    this.maxVida = 100
+    this.vida = this.maxVida
   }
 }
 
 // clase Pregunta -> representa cada pregunta del juego
 export class pregunta {
   constructor({ id, topic, text, opciones, respuesta, dificultad }) {
-    this.id = id 
-    this.topic = topic 
+    this.id = id
+    this.topic = topic
     this.text = text
     this.opciones = opciones
-    this.respuesta = respuesta 
-    this.dificultad = dificultad 
-    this.used = false 
+    this.respuesta = respuesta
+    this.dificultad = dificultad
+    this.used = false
   }
 }
 
 // Clase Juego: controla toda la lógica del juego
 export class juego {
   constructor(jugadores, preguntas) {
-    this.jugadores = jugadores 
-    this.preguntas = preguntas 
+    this.jugadores = jugadores
+    this.preguntas = preguntas
     this.jugadorActualID = 0
-    this.round = 1 
-    this.isSecondChance = false 
-    this.topicsEnJuego = [] 
+    this.round = 1
+    this.isSecondChance = false
+    this.topicsEnJuego = []
     this.currentTopic = null
     this.currentQuestion = null
     this.timer = 0
@@ -48,7 +48,7 @@ export class juego {
 
   // cambia al siguiente jugador.
   siguienteJugador() {
-    this.jugadorActualID = 1 - this.jugadorActualID 
+    this.jugadorActualID = 1 - this.jugadorActualID
   }
 
   // calcula el tiempo máximo basado en la dificultad de la pregunta.

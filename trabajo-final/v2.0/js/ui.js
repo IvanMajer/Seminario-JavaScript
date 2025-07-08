@@ -1,13 +1,15 @@
-
 import * as control from "./control.js"
 
-// variables globales para la ruleta. 
+// variables globales para la ruleta.
 let wheelCanvas, wheelCtx, spinButton
 let sectors = []
 let isSpinning = false
 let currentTopics = []
 let targetTopic = ""
 let animationId = null
+let questionActive = false
+const correct = false
+const isTimeout = false
 
 // constantes para la ruleta
 const PI = Math.PI
@@ -18,7 +20,7 @@ const rad = 200 // radio de la ruleta (400px de diámetro)
 export function renderSetup(onStart, availableTopics) {
   const root = document.getElementById("root")
 
-  // html para cada jugador. 
+  // html para cada jugador.
   const playersHtml = [0, 1]
     .map((i) => {
       return `
@@ -61,7 +63,7 @@ export function renderSetup(onStart, availableTopics) {
     })
     .join("")
 
-  // HTML completo de la pagina. 
+  // HTML completo de la pagina.
   root.innerHTML = `
     <div class="setup-container">
       <header class="game-header">
@@ -170,7 +172,7 @@ export function renderSetup(onStart, availableTopics) {
     })
 
     console.log("Jugadores configurados:", players)
-    onStart(players) // llamado a funcion que inicia el juego. 
+    onStart(players) // llamado a funcion que inicia el juego.
   })
 }
 
@@ -182,10 +184,6 @@ function generateAvatarOptions(playerIndex) {
     "avatar2.png",
     "avatar3.png",
     "avatar4.png",
-    "avatar5.png",
-    "avatar6.png",
-    "avatar7.png",
-    "avatar8.png",
   ]
 
   return avatarFiles
@@ -198,12 +196,6 @@ function generateAvatarOptions(playerIndex) {
   `,
     )
     .join("")
-}
-
-// funcion que devuelve el icono correspondiente a cada tema.
-function getTopicIcon(topicName, availableTopics) {
-  const tema = availableTopics.find((t) => t.nombre === topicName)
-  return tema ? tema.icono : "📚"
 }
 
 // funcion que renderiza la pantalla principal del juego.
@@ -226,7 +218,19 @@ export function renderGame(partida, availableTopics) {
   <!-- Panel de pregunta - Derecha -->
   <div class="question-area">
     <div class="round-header">
-      <h2>RONDA: <span id="round-number">${partida.round}</span></h2>
+      <div class="round-info">
+        <h2>RONDA: <span id="round-number">${partida.round}</span></h2>
+        <!-- NUEVO: Indicador compacto del jugador actual -->
+        <div id="current-player-indicator" class="current-player-compact hidden">
+          <div class="compact-avatar">
+            <img id="turn-player-avatar" src="/placeholder.svg" alt="" class="compact-avatar-img">
+          </div>
+          <div class="compact-details">
+            <span class="compact-label">Turno:</span>
+            <span id="turn-player-name" class="compact-name">Jugador</span>
+          </div>
+        </div>
+      </div>
     </div>
     
     <div id="question-panel" class="question-panel-new hidden">
@@ -262,6 +266,15 @@ export function renderGame(partida, availableTopics) {
   console.log("Pantalla de juego renderizada.")
 }
 
+// Función para actualizar el número de ronda en pantalla
+export function updateRoundNumber(roundNumber) {
+  const roundElement = document.getElementById("round-number")
+  if (roundElement) {
+    roundElement.textContent = roundNumber
+    console.log("Ronda actualizada a:", roundNumber)
+  }
+}
+
 // funcion que actualiza las barras de vida de los jugadores.
 export function updateLifeBars(jugadores) {
   jugadores.forEach((player, index) => {
@@ -286,8 +299,7 @@ export function updateLifeBars(jugadores) {
   })
 }
 
-
-// funcion inicio de ruleta. 
+// funcion inicio de ruleta.
 function initWheel(topics, availableTopics) {
   console.log("Se inicio la ruleta con los temas:", topics)
 
@@ -329,7 +341,7 @@ function initWheel(topics, availableTopics) {
 
   // event listener para el botón de girar.
   spinButton.addEventListener("click", () => {
-    if (!isSpinning) {
+    if (!isSpinning && !questionActive) {
       startSpin()
     }
   })
@@ -465,14 +477,41 @@ export function renderSpinner(topic, topicIndex, topics, availableTopics) {
     // solo actualizamos el tema objetivo si la ruleta ya existe.
     targetTopic = topic
   }
-
+  // nos aseguramos que el boton pueda girar la proxima ronda.
+  const spinBtn = document.querySelector("#spin")
+  if (spinBtn) {
+    spinBtn.style.pointerEvents = "auto"
+    spinBtn.style.opacity = "1"
+    spinBtn.textContent = "GIRAR"
+  }
   console.log("Ruleta lista. El usuario debe clickear para girar.")
 }
 
 // funcion que renderiza una pregunta.
 export function renderQuestion(pregunta) {
+  questionActive = true
+
+  // Mostrar el indicador del jugador actual
+  const currentPlayerIndicator = document.getElementById("current-player-indicator")
+  const turnPlayerAvatar = document.getElementById("turn-player-avatar")
+  const turnPlayerName = document.getElementById("turn-player-name")
+
+  // Obtener información del jugador actual desde el contexto global
+  // Necesitamos acceso a la partida, lo haremos a través de una variable global
+  if (window.currentGame && window.currentGame.jugadorActual) {
+    const currentPlayer = window.currentGame.jugadorActual
+
+    turnPlayerAvatar.src = currentPlayer.avatar
+    turnPlayerAvatar.alt = currentPlayer.nombre
+    turnPlayerName.textContent = currentPlayer.nombre
+
+    // Mostrar el indicador
+    currentPlayerIndicator.classList.remove("hidden")
+
+    console.log("Mostrando turno de:", currentPlayer.nombre)
+  }
+
   const questionPanel = document.getElementById("question-panel")
-  const difficultyStars = "⭐".repeat(pregunta.dificultad)
 
   console.log("Mostrando pregunta:", pregunta.text)
 
@@ -511,6 +550,14 @@ export function renderQuestion(pregunta) {
 
       // llamamos al controlador con la respuesta.
       control.handleAnswer(selectedIndex)
+
+      //se deshabilita el boton cuando se esta contestando una pregunta.
+      const spinButton = document.getElementById("spin")
+      if (spinButton) {
+        spinButton.style.pointerEvents = "none"
+        spinButton.style.opacity = "0.5"
+        spinButton.textContent = "RESPONDIENDO..."
+      }
     })
   })
 }
@@ -533,22 +580,41 @@ export function updateTimer(value) {
 }
 
 // funcion que muestra el resultado de cada ronda.
-export function showRoundResult(correct, damage, isTimeout = false, onClose) {
+export function showRoundResult(correct, damage, isTimeout = false, correctAnswerInfo = null, onClose) {
   // determinamos el mensaje segun el resultado.
-  const message = isTimeout
+  let message = isTimeout
     ? `⏰ ¡Se acabó el tiempo! -${damage} de vida`
     : correct
       ? `🎉 ¡Respuesta correcta! -${damage} al rival`
       : `❌ Respuesta incorrecta: -${damage} para ti`
 
+  if (!correct && !isTimeout && correctAnswerInfo) {
+    message += `\n\n La respuesta correcta era: "${correctAnswerInfo.correctText}"`
+  }
   const icon = isTimeout ? "⏰" : correct ? "🎉" : "❌"
   const className = isTimeout ? "timeout" : correct ? "correct" : "incorrect"
 
   // reproducimos sonido según el resultado.
   if (correct) {
     playSound("correct")
+  } else if (isTimeout) {
+    playSound("timeout")
   } else {
     playSound("incorrect")
+  }
+
+  //si la respuesta fue incorrecta, marcamos la respuesta correcta.
+  if (!correct && !isTimeout && correctAnswerInfo) {
+    const optionsContainer = document.getElementById("options-container")
+    if (optionsContainer) {
+      const correctOption = optionsContainer.querySelector(`[data-idx="${correctAnswerInfo.correctIndex}"]`)
+      if (correctOption) {
+        correctOption.style.background = "#4caf50"
+        correctOption.style.color = "white"
+        correctOption.style.border = "3px solid #2e7d32"
+        correctOption.style.transform = "scale(1.02)"
+      }
+    }
   }
 
   // creamos el modal.
@@ -557,7 +623,7 @@ export function showRoundResult(correct, damage, isTimeout = false, onClose) {
   modal.innerHTML = `
     <div class="modal-content ${className}">
       <div class="result-icon">${icon}</div>
-      <p class="result-message">${message}</p>
+      <p class="result-message" style="white-space: pre-line;">${message}</p>
       <button id="modal-ok" class="modal-button">Continuar</button>
     </div>
   `
@@ -566,7 +632,14 @@ export function showRoundResult(correct, damage, isTimeout = false, onClose) {
 
   // event listener para cerrar el modal.
   document.getElementById("modal-ok").addEventListener("click", () => {
+    questionActive = false
     document.body.removeChild(modal)
+    const spinButton = document.getElementById("spin")
+    if (spinButton) {
+      spinButton.style.pointerEvents = "auto"
+      spinButton.style.opacity = "1"
+      spinButton.textContent = "GIRAR"
+    }
     onClose() // ejecutamos la función de callback.
   })
 }
@@ -612,39 +685,77 @@ export function renderEnd({ winner, rounds }) {
   })
 }
 
+// Agregar función para precargar sonidos (opcional, mejora la experiencia)
+function preloadSounds() {
+  const soundFiles = [
+    "assets/sounds/spin.mp3",
+    "assets/sounds/stop.mp3",
+    "assets/sounds/tick.mp3",
+    "assets/sounds/correct.mp3",
+    "assets/sounds/incorrect.mp3",
+    "assets/sounds/victory.mp3",
+    "assets/sounds/timeout.mp3",
+  ]
+
+  soundFiles.forEach((file) => {
+    const audio = new Audio(file)
+    audio.preload = "auto"
+    audio.load()
+  })
+
+  console.log("Sonidos precargados")
+}
+
+// Exportar función de precarga
+export { preloadSounds }
+
 // funcion auxiliar para reproducir sonidos.
 function playSound(soundType) {
-  // esta funcion intentara reproducir sonidos si están disponibles.
   try {
-    const audio = new Audio()
+    let audioFile = null
 
+    // Mapeo de tipos de sonido a archivos
     switch (soundType) {
       case "spin":
-        // ruleta girando.
-        console.log("Reproduciendo sonido: ruleta girando")
+        audioFile = "assets/sounds/spin.mp3" // o .wav, .ogg
         break
       case "stop":
-        // para la ruleta
-        console.log("Reproduciendo sonido: ruleta detenida")
+        audioFile = "assets/sounds/stop.mp3"
         break
       case "tick":
-        // tick del temporizador
-        console.log("Reproduciendo sonido: tick")
+        audioFile = "assets/sounds/tick.mp3"
         break
       case "correct":
-        // respuesta correcta
-        console.log("Reproduciendo sonido: respuesta correcta")
+        audioFile = "assets/sounds/correct.mp3"
         break
       case "incorrect":
-        // respuesta incorrecta
-        console.log("Reproduciendo sonido: respuesta incorrecta")
+        audioFile = "assets/sounds/incorrect.mp3"
         break
       case "victory":
-        // Sonido de victoria
-        console.log("Reproduciendo sonido: victoria")
+        audioFile = "assets/sounds/victory.mp3"
         break
+      case "timeout":
+        audioFile = "assets/sounds/timeout.mp3"
+        break
+      default:
+        console.log("Tipo de sonido no reconocido:", soundType)
+        return
+    }
+
+    if (audioFile) {
+      const audio = new Audio(audioFile)
+      audio.volume = 0.7 // Ajusta el volumen (0.0 a 1.0)
+
+      // Reproducir el sonido
+      audio.play().catch((error) => {
+        console.log("No se pudo reproducir el sonido:", soundType, error)
+      })
+
+      console.log("Reproduciendo sonido:", soundType, "->", audioFile)
     }
   } catch (error) {
-    console.log("No se pudo reproducir el sonido:", soundType)
+    console.log("Error al reproducir sonido:", soundType, error)
   }
 }
+
+preloadSounds()
