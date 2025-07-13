@@ -134,7 +134,7 @@ export function renderLobby() {
     </div>
   `
 
-  // Event listeners
+  // Event listeners usando referencias directas a las funciones
   const createRoomBtn = document.getElementById("create-room-btn")
   const joinRoomBtn = document.getElementById("join-room-btn")
   const refreshRoomsBtn = document.getElementById("refresh-rooms-btn")
@@ -184,7 +184,7 @@ export function renderLobby() {
   }, 500)
 }
 
-// NUEVA: Actualizar lista de salas
+// NUEVA: Actualizar lista de salas - CORREGIDO para usar event listeners
 export function updateRoomList(rooms) {
   const roomsList = document.getElementById("rooms-list")
   if (!roomsList) return
@@ -216,14 +216,14 @@ export function updateRoomList(rooms) {
       <div class="room-actions">
         <button 
           class="copy-code-btn" 
-          onclick="control.copyRoomCode('${room.code}')"
+          data-room-code="${room.code}"
           title="Copiar código"
         >
           📋
         </button>
         <button 
           class="join-room-card-btn ${!room.canJoin ? "disabled" : ""}" 
-          onclick="control.joinRoom('${room.code}')"
+          data-room-code="${room.code}"
           ${!room.canJoin ? "disabled" : ""}
         >
           ${room.canJoin ? "🎯 Unirse" : "🔒 Llena"}
@@ -233,6 +233,26 @@ export function updateRoomList(rooms) {
   `,
     )
     .join("")
+
+  // Agregar event listeners después de crear el HTML
+  const copyButtons = roomsList.querySelectorAll(".copy-code-btn")
+  const joinButtons = roomsList.querySelectorAll(".join-room-card-btn")
+
+  copyButtons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const roomCode = e.target.getAttribute("data-room-code")
+      control.copyRoomCode(roomCode)
+    })
+  })
+
+  joinButtons.forEach((button) => {
+    button.addEventListener("click", (e) => {
+      if (!e.target.disabled) {
+        const roomCode = e.target.getAttribute("data-room-code")
+        control.joinRoom(roomCode)
+      }
+    })
+  })
 }
 
 // NUEVA: Renderizar sala de espera
@@ -247,12 +267,12 @@ export function renderRoomWaiting(roomData, playerNumber) {
           <div class="room-code-display">
             <span class="code-label">Código:</span>
             <span class="code-value">${roomData.code}</span>
-            <button class="copy-code-button" onclick="control.copyRoomCode('${roomData.code}')">
+            <button class="copy-code-button" id="copy-code-btn" data-room-code="${roomData.code}">
               📋 Copiar
             </button>
           </div>
         </div>
-        <button class="leave-room-button" onclick="control.returnToLobby()">
+        <button class="leave-room-button" id="leave-room-btn">
           ← Volver al Lobby
         </button>
       </header>
@@ -290,6 +310,19 @@ export function renderRoomWaiting(roomData, playerNumber) {
       </div>
     </div>
   `
+
+  // Agregar event listeners
+  const copyCodeBtn = document.getElementById("copy-code-btn")
+  const leaveRoomBtn = document.getElementById("leave-room-btn")
+
+  copyCodeBtn.addEventListener("click", (e) => {
+    const roomCode = e.target.getAttribute("data-room-code")
+    control.copyRoomCode(roomCode)
+  })
+
+  leaveRoomBtn.addEventListener("click", () => {
+    control.returnToLobby()
+  })
 }
 
 // NUEVA: Actualizar información de la sala
@@ -532,10 +565,10 @@ export function renderSetup(onStart, availableTopics) {
 // Generar opciones de avatar
 function generateAvatarOptions() {
   const avatars = [
-    { url: "/assets/avatars/avatar1.png", name: "Chica Rosa" },
-    { url: "/assets/avatars/avatar2.png", name: "Chica Roja" },
-    { url: "/assets/avatars/avatar3.png", name: "Chico Gorra" },
-    { url: "/assets/avatars/avatar4.png", name: "Chico Rizado" },
+    { url: "/placeholder.svg?height=64&width=64", name: "Avatar 1" },
+    { url: "/placeholder.svg?height=64&width=64", name: "Avatar 2" },
+    { url: "/placeholder.svg?height=64&width=64", name: "Avatar 3" },
+    { url: "/placeholder.svg?height=64&width=64", name: "Avatar 4" },
   ]
 
   return avatars
@@ -635,7 +668,7 @@ export function updateLifeBars(jugadores) {
     playerInfoDiv.innerHTML = `
       <div class="player-avatar ${isLowLife ? "danger" : ""}">
         <img src="${player.avatar}" alt="${player.nombre}" class="avatar-image"
-             onerror="this.src='data:image/svg+xml;charset=utf-8,%3Csvg width=\'64\' height=\'64\' viewBox=\'0 0 64 64\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ccircle cx=\'32\' cy=\'32\' r=\'32\' fill=\'%23DC143C\'/%3E%3Ccircle cx=\'32\' cy=\'24\' r=\'8\' fill=\'white\'/%3E%3Cpath d=\'M20 48 Q32 40 44 48 L44 56 Q32 64 20 56 Z\' fill=\'white\'/%3E%3C/svg%3E'">
+             onerror="this.src='/placeholder.svg?height=64&width=64'">
       </div>
       <div class="player-details">
         <span class="player-name">${player.nombre}</span>
@@ -694,7 +727,7 @@ function initWheel(topics, availableTopics) {
   // Dibujar ruleta inicial
   drawWheel(0)
 
-  // Configurar botón de girar
+  // Configurar botón de girar con event listener
   const newSpinButton = spinButton.cloneNode(true)
   spinButton.parentNode.replaceChild(newSpinButton, spinButton)
   spinButton = newSpinButton
@@ -997,7 +1030,7 @@ export function renderEnd({ winner, rounds, roomCode }) {
         <div class="winner-info">
           <div class="winner-avatar">
             <img src="${winner.avatar}" alt="${winner.nombre}" class="winner-avatar-img"
-                 onerror="this.src='data:image/svg+xml;charset=utf-8,%3Csvg width=\'64\' height=\'64\' viewBox=\'0 0 64 64\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ccircle cx=\'32\' cy=\'32\' r=\'32\' fill=\'%23DC143C\'/%3E%3Ccircle cx=\'32\' cy=\'24\' r=\'8\' fill=\'white\'/%3E%3Cpath d=\'M20 48 Q32 40 44 48 L44 56 Q32 64 20 56 Z\' fill=\'white\'/%3E%3C/svg%3E'">
+                 onerror="this.src='/placeholder.svg?height=120&width=120'">
           </div>
           <h2 class="winner-name">${winner.nombre}</h2>
           <p class="winner-subtitle">¡Eres el campeón del conocimiento!</p>

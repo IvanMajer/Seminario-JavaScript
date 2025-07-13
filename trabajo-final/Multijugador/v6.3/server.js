@@ -100,13 +100,6 @@ class GameManager {
       console.log(`👥 ${playerSocket.id} se unió a sala ${roomCode}`)
       this.broadcastRoomList()
 
-      // Si la sala está llena, iniciar juego
-      if (room.isFull()) {
-        setTimeout(() => {
-          room.startGame()
-        }, 1000)
-      }
-
       return {
         success: true,
         roomCode: roomCode,
@@ -309,7 +302,7 @@ class GameRoom {
     return this.players.get(socketId)
   }
 
-  // Configurar jugador
+  // Configurar jugador - MEJORADO
   configurePlayer(socketId, data) {
     const player = this.findPlayer(socketId)
     if (!player) return
@@ -321,9 +314,21 @@ class GameRoom {
 
     console.log(`⚙️ Jugador ${player.nombre} configurado en sala ${this.roomCode}`)
 
+    // Enviar confirmación al jugador que se configuró
+    player.socket.emit("player-configured", {
+      success: true,
+      roomData: {
+        code: this.roomCode,
+        name: this.roomName,
+        players: this.getPublicPlayers(),
+        gameStarted: this.gameStarted,
+      },
+    })
+
     // Verificar si ambos están listos
     const allReady = Array.from(this.players.values()).every((p) => p.ready) && this.players.size === 2
 
+    // Notificar a todos sobre la actualización
     this.broadcastToRoom("room-updated", {
       roomCode: this.roomCode,
       players: this.getPublicPlayers(),
@@ -334,7 +339,7 @@ class GameRoom {
     if (allReady && !this.gameStarted) {
       setTimeout(() => {
         this.startGame()
-      }, 1000)
+      }, 2000) // Dar tiempo para que se vea la pantalla de espera
     }
   }
 
@@ -682,7 +687,7 @@ io.on("connection", (socket) => {
     socket.emit("room-list-updated", gameManager.getPublicRooms())
   })
 
-  // Configurar jugador
+  // Configurar jugador - MEJORADO
   socket.on("configure-player", (data) => {
     const room = gameManager.getPlayerRoom(socket.id)
     if (room) {

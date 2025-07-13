@@ -504,3 +504,24 @@ export function handleSpinEnd() {
 export function nextTurn() {
   console.log("🔄 Siguiente turno manejado por servidor")
 }
+
+// SOLUCIÓN AL PROBLEMA: Exponer funciones al objeto global window
+// Esto permite que los onclick handlers en HTML funcionen correctamente
+if (typeof window !== "undefined") {
+  // Crear objeto global control
+  window.control = {
+    createRoom,
+    joinRoom,
+    requestRoomList,
+    configurePlayer,
+    spinWheel,
+    handleAnswer,
+    returnToLobby,
+    requestServerStats,
+    copyRoomCode,
+    handleSpinEnd,
+    nextTurn,
+  }
+
+  console.log("🌐 Funciones de control expuestas globalmente")
+}
