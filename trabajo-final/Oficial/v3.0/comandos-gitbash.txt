@@ -1,0 +1,20 @@
+* Crear o clonar repositorios
+    - git init
+    - git clone <url-del-repositorio>
+
+* Seguimiento y confirmaciones
+    - git status
+    - git add <archivo> o git add .
+    - git commit -m "Mensaje"
+
+* Trabajar con ramas
+     - git branch [lista ramas locales]
+     - git branch <nombre-rama> [crea nueva rama]
+     - git checkout <nombre-rama> [cambia a rama existente]
+     - git checkout -b <nombre-rama> [crea y cambia a nueva rama]
+     - git merge <nombre-rama> [fusiona rama en la actual]
+
+*Sincronizar con GitHub
+     - git push -u origin main
+     - git pull origin main
+
